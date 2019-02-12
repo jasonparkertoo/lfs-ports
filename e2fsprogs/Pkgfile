@@ -1,0 +1,25 @@
+name=e2fsprogs
+version=1.44.3
+release=1
+source=(https://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v${version}/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+
+    mkdir build
+    cd build
+
+    ../configure --prefix=/usr \
+        --bindir=/bin \
+        --with-root-prefix="" \
+        --enable-elf-shlibs \
+        --disable-libblkid \
+        --disable-libuuid \
+        --disable-uuidd \
+        --disable-fsck \
+        --disable-nls
+    make
+	make -j1 DESTDIR=$PKG install install-libs
+    chmod -v u+w $PKG/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+	rm -rf $PKG/usr/share/info
+}

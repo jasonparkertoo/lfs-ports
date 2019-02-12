@@ -1,0 +1,5 @@
+*.gz
+*.xz
+*.bz2
+*.tbz2
+*.pkg.tar.xz*

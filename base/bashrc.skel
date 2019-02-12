@@ -1,0 +1,4 @@
+# ~/.bashrc
+
+test -f /etc/bashrc && source /etc/bashrc
+

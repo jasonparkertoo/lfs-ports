@@ -1,0 +1,50 @@
+name=systemd
+version=239
+release=1
+source=(https://github.com/systemd/systemd/archive/v${version}/$name-$version.tar.gz
+        systemd-${version}-glibc_statx_fix-1.patch
+        systemd-user-sessions
+        10-eth-dhcp.network)
+
+build() {
+	cd $name-$version
+
+    patch -p1 < ../systemd-239-glibc_statx_fix-1.patch
+
+    sed -i 's/GROUP="render", //' rules/50-udev-default.rules.in
+
+    mkdir -p build
+    cd build
+
+    meson --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        -Dblkid=true \
+        -Dbuildtype=release \
+        -Ddefault-dnssec=no \
+        -Dfirstboot=false \
+        -Dinstall-tests=false \
+        -Dkill-path=/bin/kill \
+        -Dkmod-path=/bin/kmod \
+        -Dldconfig=false \
+        -Dmount-path=/bin/mount \
+        -Drootprefix= \
+        -Drootlibdir=/lib \
+        -Dsplit-usr=true \
+        -Dsulogin-path=/sbin/sulogin \
+        -Dsysusers=false \
+        -Dumount-path=/bin/umount \
+        -Db_lto=false \
+        ..
+    ninja
+    DESTDIR=$PKG ninja install
+
+    rm -rfv $PKG/usr/lib/rpm
+    rm -f $PKG/usr/bin/xsltproc
+    rm -rf $PKG/usr/share/doc
+
+    install -D -m 0755 $SRC/systemd-user-sessions $PKG/lib/systemd/systemd-user-sessions
+    install -D -m 0644 $SRC/10-eth-dhcp.network $PKG/etc/systemd/network/10-eth-dhcp.network
+
+    ln -sfv ../run/systemd/resolve/resolv.conf $PKG/etc/resolv.conf
+}

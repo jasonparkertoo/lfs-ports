@@ -1,0 +1,13 @@
+name=intltool
+version=0.51.0
+release=1
+source=(https://launchpad.net/intltool/trunk/0.51.0/+download/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	sed -i 's:\\\${:\\\$\\{:' intltool-update.in
+    ./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/info
+}

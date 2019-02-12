@@ -1,0 +1,15 @@
+name=gdbm
+version=1.17
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+        --disable-static \
+         --enable-libgdbm-compat \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/info $PKG/usr/lib/*.la
+}

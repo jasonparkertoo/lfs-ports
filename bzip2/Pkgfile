@@ -1,0 +1,27 @@
+name=bzip2
+version=1.0.6
+release=1
+source=(http://anduin.linuxfromscratch.org/LFS/$name-$version.tar.gz
+        bzip2-$version-install_docs-1.patch)
+
+build() {
+	cd $name-$version
+    patch -p1 < ../bzip2-$version-install_docs-1.patch
+    sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+    sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+    make -f Makefile-libbz2_so
+    make clean
+    make
+    make PREFIX=$PKG/usr install
+
+    mkdir -p $PKG/bin $PKG/lib
+
+    cp -v bzip2-shared $PKG/bin/bzip2
+    cp -av libbz2.so* $PKG/lib
+    ln -sv ../../lib/libbz2.so.1.0 $PKG/usr/lib/libbz2.so
+    rm -v $PKG/usr/bin/{bunzip2,bzcat,bzip2}
+    ln -sv bzip2 $PKG/bin/bunzip2
+    ln -sv bzip2 $PKG/bin/bzcat
+
+    rm -rf $PKG/usr/share/doc
+}

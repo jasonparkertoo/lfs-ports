@@ -1,0 +1,16 @@
+name=file
+version=5.34
+release=1
+source=(ftp://ftp.astron.com/pub/file/file-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr  --disable-nls
+	make
+	make check
+	make DESTDIR=$PKG install
+
+    rm $PKG/usr/lib/*.la
+
+	rm -rf $PKG/usr/share/info
+}

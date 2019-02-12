@@ -1,0 +1,19 @@
+name=perl-xml-parser
+version=2.44
+release=1
+source=(https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-$version.tar.gz)
+
+build() {
+	cd XML-Parser-$version
+	perl Makefile.PL
+	make
+	make DESTDIR=$PKG install
+	
+    find $PKG -name .packlist -o \
+		-name perllocal.pod -o \
+		-name README -o \
+		-name '*.bs' | xargs rm
+
+    rmdir $PKG/usr/lib/perl5/5.28.0/x86_64-linux-thread-multi
+    rmdir $PKG/usr/lib/perl5/5.28.0
+}

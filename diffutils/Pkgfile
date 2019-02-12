@@ -1,0 +1,13 @@
+name=diffutils
+version=3.6
+release=1
+source=(http://ftp.gnu.org/gnu/$name/$name-$version.tar.xz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/info
+}

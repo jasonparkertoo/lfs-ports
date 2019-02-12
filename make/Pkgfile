@@ -1,0 +1,14 @@
+name=make
+version=4.2.1
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+    sed -i '211,217 d; 219,229 d; 232 d' glob/glob.c
+	./configure --prefix=/usr \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/{info,doc}
+}

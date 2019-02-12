@@ -1,0 +1,21 @@
+name=vim
+version=8.1
+release=1
+source=(ftp://ftp.vim.org/pub/vim/unix/$name-$version.tar.bz2
+        vimrc vimrc.skel)
+
+build() {
+	cd ${name}81
+    echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
+	./configure --prefix=/usr \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+
+    ln -sv vim $PKG/usr/bin/vi
+
+	rm -rf $PKG/usr/share/info
+
+    install -D -m 0644 $SRC/vimrc.skel $PKG/etc/skel/.vimrc
+    install -D -m 0644 $SRC/vimrc $PKG/etc/vimrc
+}

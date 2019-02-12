@@ -1,0 +1,19 @@
+name=tzdata
+version=2018e
+release=1
+source=(https://www.iana.org/time-zones/repository/releases/${name}${version}.tar.gz)
+
+build() {
+	ZONEINFO=/usr/share/zoneinfo
+
+    mkdir -pv $PKG/$ZONEINFO/{posix,right}
+    for tz in etcetera southamerica northamerica europe africa antarctica  \
+        asia australasia backward pacificnew systemv; do
+            zic -L /dev/null -d $PKG/$ZONEINFO -y "sh yearistype.sh" ${tz}
+            zic -L /dev/null -d $PKG/$ZONEINFO/posix -y "sh yearistype.sh" ${tz}
+            zic -L leapseconds -d $PKG/$ZONEINFO/right -y "sh yearistype.sh" ${tz}
+    done
+
+    cp -v zone.tab zone1970.tab iso3166.tab $PKG/$ZONEINFO
+    zic -d $PKG/$ZONEINFO -p America/New_York
+}

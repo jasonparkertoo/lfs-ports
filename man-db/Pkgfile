@@ -1,0 +1,21 @@
+name=man-db
+version=2.8.4
+release=1
+source=(http://download.savannah.gnu.org/releases/man-db/$name-$version.tar.xz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+     --docdir=/usr/share/doc/man-db-$version \
+        --sysconfdir=/etc \
+        --disable-setuid \
+        --enable-cache-owner=bin \
+        --with-browser=/usr/bin/lynx \
+        --with-vgrind=/usr/bin/vgrind \
+        --with-grap=/usr/bin/grap \
+        --libexecdir=/usr/lib \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/{info,doc} $PKG/usr/lib/$name/*.la
+}

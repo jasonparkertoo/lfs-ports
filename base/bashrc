@@ -1,0 +1,4 @@
+# /etc/bashrc
+
+test -f /etc/profile.d/dircolors.sh && source /etc/profile.d/dircolors.sh
+test -f /etc/profile./prompt.sh && source /etc/profile.d/prompt.sh

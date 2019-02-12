@@ -1,0 +1,21 @@
+name=gettext
+version=0.19.8.1
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+
+    sed -i '/^TESTS =/d' gettext-runtime/tests/Makefile.in 
+    sed -i 's/test-lock..EXEEXT.//' gettext-tools/gnulib-tests/Makefile.in
+    sed -e '/AppData/{N;N;p;s/\.appdata\./.metainfo./}' -i gettext-tools/its/appdata.loc
+
+	./configure --prefix=/usr \
+        --disable-nls \
+        --disable-static \
+        --docdir=/usr/share/doc/gettext-$version
+	make
+	make DESTDIR=$PKG install
+    chmod -v 0755 $PKG/usr/lib/preloadable_libintl.so
+	rm -rf $PKG/usr/share/{info,doc} $PKG/usr/lib/*.la
+}

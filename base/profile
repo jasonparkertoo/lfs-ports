@@ -1,0 +1,11 @@
+# /etc/profile
+
+# Set the initial path
+export PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+for script in /etc/profile.d/*.sh ; do
+    if [ -r $script ] ; then
+        . $script
+    fi
+done
+

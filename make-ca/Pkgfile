@@ -1,0 +1,11 @@
+name=make-ca
+version=0.8
+release=1
+source=(https://github.com/djlucas/make-ca/archive/v0.8/$name-$version.tar.gz
+        http://www.cacert.org/certs/root.crt
+        http://www.cacert.org/certs/class3.crt)
+
+build() {
+    cd $name-$version
+    make install DESTDIR=$PKG 
+}

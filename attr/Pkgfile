@@ -1,0 +1,20 @@
+name=attr
+version=2.4.48
+release=1
+source=(http://download.savannah.gnu.org/releases/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+        --disable-static  \
+        --sysconfdir=/etc \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+
+    mkdir $PKG/lib
+    mv -v $PKG/usr/lib/libattr.so.* $PKG/lib
+    ln -sfv ../../lib/$(readlink $PKG/usr/lib/libattr.so) $PKG/usr/lib/libattr.so
+
+	rm -rf $PKG/usr/share/{info,doc} $PKG/usr/lib/*.la
+}

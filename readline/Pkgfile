@@ -1,0 +1,28 @@
+name=readline
+version=7.0
+release=1
+source=(http://ftp.gnu.org/gnu/readline/readline-$version.tar.gz
+        inputrc)
+
+build() {
+	cd $name-$version
+
+    sed -i '/MV.*old/d' Makefile.in
+    sed -i '/{OLDSUFF}/c:' support/shlib-install
+
+	./configure --prefix=/usr \
+        --disable-static \
+        --disable-nls
+	make 
+	make DESTDIR=$PKG install
+
+    install -d $PKG/lib
+    mv -v $PKG/usr/lib/lib{readline,history}.so.* $PKG/lib
+    chmod -v u+w $PKG/lib/lib{readline,history}.so.*
+    ln -sfv ../../lib/$(readlink $PKG/usr/lib/libreadline.so) $PKG/usr/lib/libreadline.so
+    ln -sfv ../../lib/$(readlink $PKG/usr/lib/libhistory.so ) $PKG/usr/lib/libhistory.so
+
+    install -D -m 0644 $SRC/inputrc $PKG/etc/inputrc
+
+	rm -rf $PKG/usr/share/{info,doc}
+}

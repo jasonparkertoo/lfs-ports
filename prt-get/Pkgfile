@@ -1,0 +1,13 @@
+name=somelib
+version=1.2.3
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz Makefile.in.patch)
+
+build() {
+	    cd $name-$version
+	    patch -p1 < ../Makefile.in.patch
+	    ./configure --prefix=/usr
+	    make
+	    make DESTDIR=$PKG install
+	    rm -rf $PKG/usr/info
+}

@@ -1,0 +1,14 @@
+name=libelf
+version=0.173
+release=1
+source=(https://sourceware.org/ftp/elfutils/$version/elfutils-$version.tar.bz2)
+
+build() {
+	cd elfutils-$version
+	./configure --prefix=/usr --disable-nls
+	make
+	make -C libelf DESTDIR=$PKG install
+
+    mkdir $PKG/usr/lib/pkgconfig
+    install -m 644 config/libelf.pc $PKG/usr/lib/pkgconfig/pkgconfig
+}

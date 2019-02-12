@@ -1,0 +1,5 @@
+drwxr-xr-x	root/root	etc/
+drwxr-xr-x	root/root	etc/ssl/
+drwxr-xr-x	root/root	etc/ssl/local/
+-rw-r--r--	root/root	etc/ssl/local/CAcert_Class_1_root.pem
+-rw-r--r--	root/root	etc/ssl/local/CAcert_Class_3_root.pem

@@ -1,0 +1,18 @@
+name=zlib
+version=1.2.11
+release=1
+source=(https://zlib.net/zlib-$version.tar.xz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make check
+	make DESTDIR=$PKG install
+
+	install -d $PKG/lib
+	mv -v $PKG/usr/lib/libz.so.* $PKG/lib
+	ln -sfv ../../lib/$(readlink $PKG/usr/lib/libz.so) $PKG/usr/lib/libz.so
+
+	rm -rf $PKG/usr/share/info
+}

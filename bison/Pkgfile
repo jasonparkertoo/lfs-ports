@@ -1,0 +1,14 @@
+name=bison
+version=3.0.5
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+        --disable-nls \
+        --docdir=/usr/share/doc/bison-3.0.5
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/{info,doc}
+}

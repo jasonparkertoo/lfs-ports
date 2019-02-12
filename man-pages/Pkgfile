@@ -1,0 +1,9 @@
+name=man-pages
+version=4.16
+release=1
+source=(https://www.kernel.org/pub/linux/docs/man-pages/man-pages-$version.tar.xz)
+
+build() {
+	cd $name-$version
+	make install DESTDIR=$PKG
+}

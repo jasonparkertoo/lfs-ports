@@ -1,0 +1,12 @@
+diff -Nuar pkgutils-5.40.7.orig/Makefile pkgutils-5.40.7/Makefile
+--- pkgutils-5.40.7.orig/Makefile	2018-02-14 16:17:57.000000000 +0000
++++ pkgutils-5.40.7/Makefile	2019-02-05 22:30:21.373960065 +0000
+@@ -34,7 +34,7 @@
+ 
+ LIBARCHIVELIBS := $(shell pkg-config --libs --static libarchive)
+ 
+-LDFLAGS += -static $(LIBARCHIVELIBS)
++LDFLAGS += $(LIBARCHIVELIBS)
+ 
+ OBJECTS = main.o pkgutil.o pkgadd.o pkgrm.o pkginfo.o
+ 

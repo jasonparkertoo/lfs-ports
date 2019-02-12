@@ -1,0 +1,15 @@
+name=libarchive
+version=3.3.3
+release=1
+source=(https://www.libarchive.org/downloads/$name-$version.tar.gz)
+
+build() {
+    cd $name-$version
+    ./configure --prefix=/usr \
+        --disable-static
+	make
+    make DESTDIR=$PKG install
+	
+    rm -rf $PKG/usr/share/info
+    rm $PKG/usr/lib/*.la
+}

@@ -1,0 +1,16 @@
+name=mpfr
+version=4.0.1
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+        --disable-static \
+        --enable-thread-safe
+	make
+	make DESTDIR=$PKG install
+
+	rm -rf $PKG/usr/share
+    rm $PKG/usr/lib/*.la
+}

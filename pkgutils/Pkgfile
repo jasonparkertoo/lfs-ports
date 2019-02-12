@@ -1,0 +1,16 @@
+name=pkgutils
+version=5.40.7
+release=1
+source=(https://crux.nu/files/$name-$version.tar.xz
+        pkgmk.conf pkgutils.patch)
+
+build() {
+	cd $name-$version
+    patch -p1 -i ../pkgutils.patch
+
+    sed -i 's:/etc:/etc/pkgutils:g' *
+
+	make
+	make DESTDIR=$PKG install
+    install -m 0644 $SRC/pkgmk.conf $PKG/etc/pkgutils/pkgmk.conf
+}

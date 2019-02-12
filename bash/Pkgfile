@@ -1,0 +1,18 @@
+name=bash
+version=4.4.18
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+        --docdir=/usr/share/doc/bash-4.4.18 \
+        --without-bash-malloc \
+        --with-installed-readline \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+    mkdir $PKG/bin
+    mv -vf $PKG/usr/bin/bash $PKG/bin
+	rm -rf $PKG/usr/share/{info,doc}
+}

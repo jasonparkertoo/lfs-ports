@@ -1,0 +1,34 @@
+name=pam
+version=1.3.0
+release=1
+source=(http://linux-pam.org/library/Linux-PAM-${version}.tar.bz2
+        system-auth system-account system-session system-password other)
+
+build() {
+	cd Linux-PAM-$version
+	./configure --prefix=/usr \
+		--sysconfdir=/etc \
+		--libdir=/usr/lib \
+		--enable-securedir=/lib/security \
+		--disable-nls
+	make
+	make DESTDIR=$PKG install
+
+	chmod -v 4755 $PKG/sbin/unix_chkpwd
+
+	install -d $PKG/lib
+	for file in pam pam_misc pamc
+	do
+		mv -v $PKG/usr/lib/lib${file}.so.* $PKG/lib
+		ln -sfv ../../lib/$(readlink $PKG/usr/lib/lib${file}.so) \
+			$PKG/usr/lib/lib${file}.so
+	done
+
+    install -d $PKG/etc/pam.d
+    install $SRC/system-{auth,password,account,session} $PKG/etc/pam.d/
+    install $SRC/other $PKG/etc/pam.d/
+
+	rm -rf $PKG/usr/share/info 
+    
+    find $PKG -name *.la -delete
+}

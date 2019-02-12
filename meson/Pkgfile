@@ -1,0 +1,10 @@
+name=meson
+version=0.47.1
+release=1
+source=(https://github.com/mesonbuild/meson/releases/download/$version/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	python3 setup.py build
+    python3 setup.py install --root=$PKG
+}

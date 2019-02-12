@@ -1,0 +1,23 @@
+name=procps-ng
+version=3.3.15
+release=1
+source=(https://sourceforge.net/projects/procps-ng/files/Production/$name-$version.tar.xz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+        --exec-prefix= \
+        --libdir=/usr/lib \
+        --docdir=/usr/share/doc/procps-ng-3.3.15 \
+        --disable-static \
+        --disable-kill \
+        --with-systemd \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+    mkdir $PKG/lib
+    mv -v $PKG/usr/lib/libprocps.so.* $PKG/lib
+    ln -sfv ../../lib/$(readlink $PKG/usr/lib/libprocps.so) $PKG/usr/lib/libprocps.so
+	rm -rf $PKG/usr/share/{info,doc}
+    rm $PKG/usr/lib/*.la
+}

@@ -1,0 +1,34 @@
+diff -Nuar bc-1.07.1.orig/bc/fix-libmath_h bc-1.07.1/bc/fix-libmath_h
+--- bc-1.07.1.orig/bc/fix-libmath_h	2017-04-07 22:20:02.000000000 +0000
++++ bc-1.07.1/bc/fix-libmath_h	2019-02-07 23:11:47.200556042 +0000
+@@ -1,9 +1,9 @@
+-ed libmath.h <<EOS-EOS
+-1,1s/^/{"/
+-1,\$s/\$/",/
+-2,\$s/^/"/
+-\$,\$d
+-\$,\$s/,\$/,0}/
+-w
+-q
+-EOS-EOS
++#! /bin/bash
++sed -e '1   s/^/{"/' \
++    -e     's/$/",/' \
++    -e '2,$ s/^/"/'  \
++    -e   '$ d'       \
++    -i libmath.h
++
++sed -e '$ s/$/0}/' \
++    -i libmath.h
+diff -Nuar bc-1.07.1.orig/configure bc-1.07.1/configure
+--- bc-1.07.1.orig/configure	2017-04-07 22:20:02.000000000 +0000
++++ bc-1.07.1/configure	2019-02-07 23:11:54.903889343 +0000
+@@ -5288,7 +5288,7 @@
+    ?-?-flex)
+ 	LEX="flex -I -8" ;;
+    ?-y-*)
+-	as_fn_error $? "readline works only with flex." "$LINENO" 5 ;;
++	: ;; # as_fn_error $? "readline works only with flex." "$LINENO" 5 ;;
+ esac
+ 
+ case $LEX-`uname -s` in

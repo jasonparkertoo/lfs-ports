@@ -1,0 +1,18 @@
+name=sed
+version=4.5
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.xz)
+
+build() {
+	cd $name-$version
+
+    sed -i 's/usr/tools/' build-aux/help2man
+    sed -i 's/testsuite.panic-tests.sh//' Makefile.in
+
+	./configure --prefix=/usr \
+        --bindir=/bin \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/{info,doc}
+}

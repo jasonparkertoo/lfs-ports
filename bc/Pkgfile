@@ -1,0 +1,18 @@
+name=bc
+version=1.07.1
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz
+        $name.patch)
+
+build() {
+	cd $name-$version
+    patch -p1 < ../bc.patch
+	./configure -prefix=/usr --with-readline \
+        --mandir=/usr/share/man \
+        --infodir=/usr/share/info
+	make
+    echo "quit" | ./bc/bc -l Test/checklib.b
+	make DESTDIR=$PKG install
+
+	rm -rf $PKG/usr/share/{info,doc}
+}

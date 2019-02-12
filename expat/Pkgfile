@@ -1,0 +1,17 @@
+name=expat
+version=2.2.6
+release=1
+source=(https://prdownloads.sourceforge.net/expat/$name-$version.tar.bz2)
+
+build() {
+	cd $name-$version
+    
+    sed -i 's|usr/bin/env |bin/|' run.sh.in
+    
+	./configure --prefix=/usr \
+        --disable-static \
+        --docdir=/usr/share/doc/expat-2.2.6
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/{info,doc} $PKG/usr/lib/*.la
+}

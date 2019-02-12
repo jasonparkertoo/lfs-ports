@@ -1,0 +1,21 @@
+name=fakeroot
+version=1.23
+release=1
+source=(https://deb.debian.org/debian/pool/main/f/$name/${name}_${version}.orig.tar.xz
+        fakeroot.ld.so.conf.d fakeroot.patch)
+
+build() {
+	cd $name-$version
+    patch -p1 < ../fakeroot.patch
+	./configure --prefix=/usr \
+        --libdir=/usr/lib/libfakeroot \
+        --disable-nls \
+        --disable-static
+	make
+	make DESTDIR=$PKG install
+
+    install -D -m 0644 $SRC/fakeroot.ld.so.conf.d $PKG/etc/ld.so.conf.d/fakeroot.conf
+
+    rm $PKG/usr/lib/libfakeroot/*.la
+	rm -rf $PKG/usr/share/man/{de,es,fr,nl,pt,sv}
+}

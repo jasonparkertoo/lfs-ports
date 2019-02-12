@@ -1,0 +1,33 @@
+name=glibc
+version=2.28
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version.tar.gz
+		$name-$version-fhs-1.patch)
+
+build() {
+    cd $name-$version
+	patch -p1 < ../$name-$version-fhs-1.patch
+
+	mkdir build
+	cd build
+
+	../configure --prefix=/usr \
+    	--disable-werror \
+        --enable-kernel=3.2 \
+        --enable-stack-protector=strong \
+		--disable-nls libc_cv_slibdir=/lib
+	make
+	# make check
+	make DESTDIR=$PKG install
+
+	cp -v ../nscd/nscd.conf $PKG/etc/nscd.conf
+	mkdir -pv $PKG/var/cache/nscd
+	install -v -Dm644 ../nscd/nscd.tmpfiles $PKG/usr/lib/tmpfiles.d/nscd.conf
+	install -v -Dm644 ../nscd/nscd.service $PKG/lib/systemd/system/nscd.service
+
+	install -d $PKG/lib64
+	ln -sv ../lib/ld-linux-x86-64.so.2 $PKG/lib64
+	ln -sv ../lib/ld-linux-x86-64.so.2 $PKG/lib64/ld-lsb-x86-64.so.3
+
+	rm -rf $PKG/usr/share/info
+}

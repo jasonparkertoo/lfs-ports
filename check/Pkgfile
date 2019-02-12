@@ -1,0 +1,12 @@
+name=check
+version=0.12.0
+release=1
+source=(https://github.com/libcheck/check/releases/download/$version/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/{info,doc} $PKG/usr/lib/*.la
+}

@@ -1,0 +1,24 @@
+name=dbus
+version=1.12.10
+release=1
+source=(https://dbus.freedesktop.org/releases/$name/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+	./configure --prefix=/usr \
+        --sysconfdir=/etc \
+        --localstatedir=/var \
+        --disable-static \
+        --disable-doxygen-docs \
+        --disable-xml-docs \
+        --docdir=/usr/share/doc/dbus-$version \
+        --with-console-auth-dir=/run/console
+	make
+	make DESTDIR=$PKG install
+
+    mv -v $PKG/usr/lib/libdbus-1.so.* $PKG/lib
+    ln -sfv ../../lib/$(readlink $PKG/usr/lib/libdbus-1.so) $PKG/usr/lib/libdbus-1.so
+    ln -sfv /etc/machine-id $PKG/var/lib/dbus
+
+	rm -rf $PKG/usr/share/info $PKG/usr/lib/*.la
+}

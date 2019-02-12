@@ -1,0 +1,14 @@
+name=iproute2
+version=4.18.0
+release=1
+source=(https://www.kernel.org/pub/linux/utils/net/$name/$name-$version.tar.xz)
+
+build() {
+	cd $name-$version
+    sed -i /ARPD/d Makefile
+    rm -fv man/man8/arpd.8
+    sed -i 's/.m_ipt.o//' tc/Makefile
+	make
+	make DESTDIR=$PKG install
+	rm -rf $PKG/usr/share/doc
+}

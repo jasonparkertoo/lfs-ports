@@ -1,0 +1,23 @@
+name=sudo
+version=1.8.23
+release=1
+source=(http://www.sudo.ws/dist/sudo-1.8.23.tar.gz sudo.pam)
+
+build() {
+	cd $name-$version
+    ./configure --prefix=/usr \
+        --libexecdir=/usr/lib \
+        --with-secure-path \
+        --without-insults \
+        --with-env-editor \
+        --with-passprompt="[sudo] password for %p: " \
+        --disable-nls
+    make
+    make install DESTDIR=$PKG
+    ln -sfv libsudo_util.so.0.0.0 $PKG/usr/lib/sudo/libsudo_util.so.0
+    install -D -m 0644 $SRC/${name}.pam $PKG/etc/pam.d/sudo
+    rm -rf $PKG/usr/share/{info,doc}
+
+    # TODO: move this in the pkgmk script
+    rm $PKG/usr/lib/$name/*.la
+}

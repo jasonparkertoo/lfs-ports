@@ -1,0 +1,38 @@
+name=gcc
+version=8.2.0
+release=1
+source=(ftp://ftp.gnu.org/gnu/$name/$name-$version/$name-$version.tar.gz)
+
+build() {
+	cd $name-$version
+    
+    sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
+    
+    mkdir build
+    cd build
+    
+	../configure --prefix=/usr \
+        --enable-languages=c,c++ \
+        --disable-multilib \
+        --disable-bootstrap \
+        --disable-libmpx \
+        --with-system-zlib \
+        --libexecdir=/usr/lib/gcc \
+        --disable-nls
+	make
+	make DESTDIR=$PKG install
+
+    mkdir -p $PKG/lib $PKG/usr/share/gdb/auto-load/usr/lib
+
+    ln -sv ../usr/bin/cpp $PKG/lib
+    ln -sv gcc $PKG/usr/bin/cc
+    install -v -dm755 $PKG/usr/lib/bfd-plugins
+    ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/8.2.0/liblto_plugin.so \
+        $PKG/usr/lib/bfd-plugins/
+
+    mv -v $PKG/usr/lib/*gdb.py $PKG/usr/share/gdb/auto-load/usr/lib
+
+	rm -rf $PKG/usr/share/info
+
+    find $PKG -name *.la -delete
+}
